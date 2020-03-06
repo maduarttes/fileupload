@@ -38,11 +38,34 @@ const storageTypes = {
         },
 
 }),
+
 };
+const storage = new ftpStorage({
+    ftp: {
+      host: "vfy.selia.com.br",
+      secure: false,
+      user: "ftpuser",
+      password: "Selia2020!"
+    },
+  
+    destination: function(req, file, storage, cb) {
+      //error fisrt callback
+      cb(null, `receita_VFY/${Date.now()}${path.extname(file.originalname)}`);
+    },
+    filename: (req, file, cb) =>{
+        crypto.randomBytes(5, (err, hash) =>{
+            if(err) cb(err);
+
+            file.key = `${hash.toString('hex')}-${file.originalname}`;
+
+            cb(null, file.key)
+        });
+    },
+  });
 
 module.exports={
     dest:path.resolve(__dirname,'..','..','tmp','uploads'),
-    storage: storageTypes[process.env.STORAGE_TYPE],
+    storage: storageTypes[process.env.STORAGE_TYPE] || storage[process.env.STORAGE_TYPE],
     limits:{
         fileSize: 2 * 1024 * 1024,
     },

@@ -1,45 +1,57 @@
-import React from 'react';
-import CircularProgressbar from 'react-circular-progressbar';
-import { MdCheckCircle, MdError, MdLink } from 'react-icons/md';
+import React from "react";
+import {CircularProgressbar} from "react-circular-progressbar";
+import { MdCheckCircle, MdError, MdLink } from "react-icons/md";
 
-import { Container, FileInfo, Preview } from './styles';
+import { Container, FileInfo, Preview } from "./styles";
 
-const FileList = () => (
-    <Container>
-        <li>
-            <FileInfo>
-                <Preview src="http://localhost:3000/files/28db33f516-Aquarius.png" />
-                    <div>
-                        <strong>profile.png</strong>
-                        <span>64kb<button onClick={() => {}}>Excluir</button></span>
-                    </div>
-                
-            </FileInfo>
+const FileList = ({ files, onDelete }) => (
+  <Container>
+    {files.map(uploadedFile => (
+      <li key={uploadedFile.id}>
+        <FileInfo>
+          <Preview src={uploadedFile.preview} />
+          <div>
+            <strong>{uploadedFile.name}</strong>
+            <span>
+              {uploadedFile.readableSize}{" "}
+              {!!uploadedFile.url  && (
+                <button onClick={() => onDelete(uploadedFile.id)}>
+                  Excluir
+                </button>
+              )}
+            </span>
+          </div>
+        </FileInfo>
+
         <div>
-            <CircularProgressbar
+          {!uploadedFile.uploaded &&
+            !uploadedFile.error && (
+              <CircularProgressbar
                 styles={{
-                    root: {width: 24},
-                    path: {stroke: '#7159c1'}
+                  root: { width: 24 },
+                  path: { stroke: "#7159c1" }
                 }}
-                strokeWith={10}
-                percentage={60}
-                />
-                <a
-                href="http://localhost:3000/files/28db33f516-Aquarius.png"
-                target="_blak"
-                rel="noopener noreferrer"
-                >
-                    <MdLink style={{ marginRight: 8}} size={24} color="#222"/>
-                 </a>
+                strokeWidth={10}
+                percentage={uploadedFile.progress}
+              />
+            )}
 
-                 <MdCheckCircle size={24} color="#78e5d5" />
-                 <MdError size={24} color="#e57878" />
+          {uploadedFile.url && (
+            <a
+              href={uploadedFile.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MdLink style={{ marginRight: 8 }} size={24} color="#222" />
+            </a>
+          )}
+
+          {uploadedFile.uploaded && <MdCheckCircle size={24} color="#78e5d5" />}
+          {uploadedFile.error && <MdError size={24} color="#e57878" />}
         </div>
-
-        </li>
-    </Container>
-
+      </li>
+    ))}
+  </Container>
 );
 
 export default FileList;
-
