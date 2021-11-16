@@ -10,7 +10,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.632.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.19.2",
     "cors": "^2.8.5",
     "create-react-app": "^3.4.0",
